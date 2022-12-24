@@ -4,6 +4,7 @@
 #include "HotDrinkFactory.h"
 #include <string>
 #include <map>
+#include <functional>
 
 using namespace std;
 
@@ -22,6 +23,33 @@ public:
 		auto drink = hot_factories[name]->make();
 		drink->prepare(volume);
 		return drink;
+	}
+};
+
+
+class DrinkWithVolumeFactory
+{
+	map<string, function<unique_ptr<HotDrink>()>> factories;
+
+public:
+	DrinkWithVolumeFactory()
+	{
+		factories["tea"] = [] {
+			auto tea = make_unique<Tea>();
+			tea->prepare(200);
+			return tea;
+		};
+
+		factories["coffee"] = [] {
+			auto coffee = make_unique<Coffee>();
+			coffee->prepare(200);
+			return coffee;
+		};
+	}
+
+	unique_ptr<HotDrink> make_drink(const string& name)
+	{
+		return factories[name]();
 	}
 };
 
