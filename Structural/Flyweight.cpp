@@ -59,6 +59,16 @@ ostream& operator<<(ostream& os, const User& user) {
 	return os;
 }
 
+
+struct User2
+{
+	flyweight<string> firstName, lastName;
+
+	User2(const string& firstName, const string &lastName)
+		:firstName(firstName), lastName(lastName) {}
+	
+};
+
 int main()
 {
 	
@@ -68,8 +78,8 @@ int main()
 	cout << u1 << endl;
 	cout << u2 << endl;
 
+	User2 u11{ "James","Steve" };
+	User2 u22{ "James","Steve" };
 
-
-	
 
 }
