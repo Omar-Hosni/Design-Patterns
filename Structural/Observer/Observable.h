@@ -16,16 +16,16 @@ struct Observable
 		{
 			observer->field_changed(source, field_name);
 		}
-
-		void subscribe(Observer<T> &observer)
-		{
-			observers.push_back(observer);
-		}
-
-		void unsubscribe(Observer<T>& observer)
-		{
-			observers.erase(observer);
-		}
 	}
+	void subscribe(Observer<T> &observer)
+	{
+		observers.push_back(observer);
+	}
+
+	void unsubscribe(Observer<T>& observer)
+	{
+		observers.erase(observer);
+	}
+	
 };
 
