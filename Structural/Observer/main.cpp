@@ -6,6 +6,7 @@
 #include "Observer.h"
 #include "Observable.h"
 #include <boost/signals2.hpp>
+#include "SaferObserver.h"
 
 using namespace boost;
 using namespace boost::signals2;
@@ -13,7 +14,7 @@ using namespace boost::signals2;
 using namespace std;
 
 
-class Person : public Observable<Person>//observable
+class Person : public SaferObservable<Person>//observable
 {
 	int age;
 public:
@@ -27,10 +28,19 @@ public:
 
 	void setAge(int age) {
 		if (this->age == age)return;
+		auto old_can_vote = get_can_vote();
 
 		this->age = age;
 		notify(*this, "age");
+
+		if (old_can_vote != get_can_vote())
+			notify(*this, "can_vote");
 	}
+
+	bool get_can_vote()const {
+		return age >= 16;
+	}
+
 
 };
 
