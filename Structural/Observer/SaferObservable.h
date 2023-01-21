@@ -10,7 +10,7 @@ template<typename T>
 class SaferObservable
 {
 	vector<Observer<T>*> observers;
-	typedef std::mutex mutex_t;
+	typedef std::recursive_mutex mutex_t;
 	mutex_t mtx;
 public:
 
@@ -21,6 +21,7 @@ public:
 
 		for (auto observer : observers)
 		{
+			if(observer)
 			observer->field_changed(source, field_name);
 		}
 	}
@@ -31,9 +32,15 @@ public:
 
 	void unsubscribe(Observer<T>& observer)
 	{
-		observers.erase(
+		auto it = find(observers.begin(), observers.end(), &observer);
+		if (it != observers.end())
+		{
+			*it = nullptr;
+		}
+
+		/*observers.erase(
 			remove(observers.begin(), observers.end(), observer), observers.end()
-		);
+		);*/
 	}
 };
 
