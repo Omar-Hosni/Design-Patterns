@@ -7,6 +7,7 @@
 #include "Observable.h"
 #include <boost/signals2.hpp>
 #include "SaferObserver.h"
+#include <exception>
 
 using namespace boost;
 using namespace boost::signals2;
@@ -80,6 +81,24 @@ public:
 	}
 };
 
+struct TrafficAdministration : Observer<Person>
+{
+	void field_changed(Person& source, const string& field_name) override
+	{
+		if (field_name == "age")
+		{
+			if (source.getAge() < 17) {
+				cout << "you are not old enough to drive" << endl;
+			}
+			else
+			{
+				cout << "Oh, ok we no longer care\n";
+				source.unsubscribe(*this);
+			}
+		}
+	}
+};
+
 
 int main()
 {
@@ -104,6 +123,21 @@ int main()
 	person2.set_age(30);
 
 	connect.disconnect(); //equivalent to unsubscribing
+
+	TrafficAdministration ta;
+	person.subscribe(ta);
+
+	person.setAge(15);
+	person.setAge(17);
+
+	try {
+
+		person.setAge(17);
+	}
+	catch (std::exception &e)
+	{
+		cout << e.what() << "\n";
+	}
 
 
 }
